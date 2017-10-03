@@ -5,5 +5,5 @@ if __name__ == "__main__":
     topology = generator.generate()
     topology.print_plot()
 
-    activator = simulator.CoverageActivator()
-    activator.generate(topology)
+    activator = simulator.CoverageActivator(topology)
+    activator.generate()

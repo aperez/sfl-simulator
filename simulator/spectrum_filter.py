@@ -5,9 +5,9 @@ class SpectrumFilter:
     def __init__(self, spectrum):
         if spectrum:
             self.transactions_filter = \
-                [x for x in xrange(spectrum.transactions)]
+                [x for x in range(spectrum.transactions)]
             self.components_filter = \
-                [x for x in xrange(spectrum.components)]
+                [x for x in range(spectrum.components)]
 
     def copy(self):
         sf = SpectrumFilter(None)

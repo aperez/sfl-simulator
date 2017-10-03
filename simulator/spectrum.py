@@ -21,6 +21,12 @@ class Spectrum:
             line = map(int, line)
             self.matrix.append(line)
 
+        self.calculate_dimensions()
+
+    def append_transaction(self, transaction):
+        self.matrix.append(transaction)
+
+    def calculate_dimensions(self):
         self.transactions = len(self.matrix)
         self.components = len(self.matrix[0]) - 1
 
