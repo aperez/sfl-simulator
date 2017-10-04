@@ -9,6 +9,7 @@ class Spectrum(object):
         self.matrix = []
         self.transactions = 0
         self.components = 0
+        self.faults = []
 
     def read(self, filename):
         f = open(filename)
@@ -64,8 +65,39 @@ class Spectrum(object):
         samples = []
         for _ in range(num_samples):
             s = Spectrum()
-            s.matrix = [t[:] for t in random.sample(self.matrix, num_transactions)]
+            s.matrix = [t[:] for t in
+                        random.sample(self.matrix, num_transactions)]
             s.calculate_dimensions()
             samples.append(s)
 
         return samples
+
+    def copy(self):
+        s = Spectrum()
+        s.matrix = [t[:] for t in self.matrix]
+        s.faults = self.faults
+        s.calculate_dimensions()
+        return s
+
+    def inject_faults(self, faults=None, num_faults=1, goodness=0, seed=None):
+        if seed is not None:
+            random.seed(seed)
+
+        if faults is None:
+            current_faults = [x for fault in self.faults for x in fault]
+            potential_faults = [x for x in range(self.components)
+                                if x not in current_faults]
+            faults = random.sample(potential_faults, num_faults)
+
+        for t in self.matrix:
+            inject = True
+            for f in faults:
+                if f < self.components and t[f] == 0:
+                    inject = False
+                    break
+
+            if inject and random.random() <= (1.0 - goodness):
+                    t[-1] |= 1
+
+        self.faults.append(faults)
+        return faults
