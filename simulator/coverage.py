@@ -21,7 +21,7 @@ class CoverageActivator(object):
                     spectrum.append_transaction(t)
 
         spectrum.calculate_dimensions()
-        spectrum.print_spectrum()
+        return spectrum
 
     def propagate(self, base, active_component, coef):
         transaction = base[:]

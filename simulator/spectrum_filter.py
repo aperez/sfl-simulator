@@ -1,6 +1,6 @@
 import sys
 
-class SpectrumFilter:
+class SpectrumFilter(object):
 
     def __init__(self, spectrum):
         if spectrum:

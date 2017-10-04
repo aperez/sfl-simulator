@@ -1,8 +1,9 @@
 from simulator.spectrum_filter import *
 
 import sys
+import random
 
-class Spectrum:
+class Spectrum(object):
 
     def __init__(self):
         self.matrix = []
@@ -52,3 +53,19 @@ class Spectrum:
                 out.write('x\n')
             else:
                 out.write('.\n')
+
+    def sample_spectra(self, num_samples, num_transactions=None, seed=None):
+        if num_transactions is None:
+            num_transactions = self.components
+
+        if seed is not None:
+            random.seed(seed)
+
+        samples = []
+        for _ in range(num_samples):
+            s = Spectrum()
+            s.matrix = [t[:] for t in random.sample(self.matrix, num_transactions)]
+            s.calculate_dimensions()
+            samples.append(s)
+
+        return samples
