@@ -1,6 +1,8 @@
 from .spectrum import *
 from .spectrum_filter import *
 
+import math
+
 def iterate_spectrum(spectrum, spectrum_filter=None, column_order=False):
     if not spectrum_filter:
         spectrum_filter = SpectrumFilter(spectrum)
@@ -103,3 +105,34 @@ def ddu(spectrum, spectrum_filter = None):
                 diversity_value *\
                 uniqueness_value
     return ddu_value, density_value, diversity_value, uniqueness_value
+
+@metric
+def entropy(spectrum, spectrum_filter, components, transactions):
+    transaction_coverages = {}
+    current_transaction = -1
+    current_coverage = None
+
+    for t, c, activity in iterate_spectrum(spectrum, spectrum_filter):
+        if current_transaction != t:
+            if current_coverage:
+                str_coverage = str(current_coverage)
+                value = transaction_coverages.get(str_coverage, 0)
+                transaction_coverages[str_coverage] = value + 1
+
+            current_transaction = t
+            current_coverage = []
+
+        if activity != 0:
+            current_coverage.append(c)
+
+    if current_coverage:
+        str_coverage = str(current_coverage)
+        value = transaction_coverages.get(str_coverage, 0)
+        transaction_coverages[str_coverage] = value + 1
+
+    entropy_value = 0.0
+    for value in transaction_coverages.values():
+        prob = value / transactions
+        entropy_value += prob * math.log(prob, 2)
+
+    return abs(entropy_value / components)

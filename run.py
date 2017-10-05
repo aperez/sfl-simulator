@@ -22,3 +22,4 @@ if __name__ == "__main__":
 
         print(simulator.coverage(spectrum))
         print(simulator.ddu(spectrum))
+        print(simulator.entropy(spectrum))
