@@ -2,10 +2,12 @@
 
 ENV = env
 PYTHON = $(ENV)/bin/python3
+#PFLAGS = -m cProfile -s cumtime
+PFLAGS =
 PIP = $(ENV)/bin/pip3
 
 run: $(ENV)
-	$(PYTHON) run.py
+	$(PYTHON) $(PFLAGS) run.py
 
 $(ENV): $(ENV)/bin/activate
 

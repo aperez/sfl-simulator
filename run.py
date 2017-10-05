@@ -19,3 +19,6 @@ if __name__ == "__main__":
         trie = mhs.calculate(spectrum)
         report = barinel.diagnose(spectrum, trie)
         print(report)
+
+        print(simulator.coverage(spectrum))
+        print(simulator.ddu(spectrum))
