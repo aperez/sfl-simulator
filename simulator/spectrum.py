@@ -10,6 +10,7 @@ class Spectrum(object):
         self.transactions = 0
         self.components = 0
         self.faults = []
+        self.id = None
 
     def read(self, filename):
         f = open(filename)
@@ -74,6 +75,7 @@ class Spectrum(object):
 
     def copy(self):
         s = Spectrum()
+        s.id = self.id
         s.matrix = [t[:] for t in self.matrix]
         s.faults = self.faults
         s.calculate_dimensions()

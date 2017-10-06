@@ -8,3 +8,4 @@ from .mhs import *
 from .barinel import *
 from .metrics import *
 from .effort import *
+from .reporter import *

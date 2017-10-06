@@ -11,17 +11,17 @@ if __name__ == "__main__":
     mhs = simulator.MHS()
     barinel = simulator.Barinel()
 
-    for spectrum in simulated_transactions.sample_spectra(3):
-        f = spectrum.inject_faults(num_faults=2)
-        print("\nSpectrum:")
-        spectrum.print_spectrum()
+    with simulator.Reporter("output/report.csv") as reporter:
+        matrix_id = 0
+        for spectrum in simulated_transactions.sample_spectra(3):
+            f = spectrum.inject_faults(num_faults=2)
+            spectrum.id = matrix_id
+            matrix_id += 1
+            print("\nSpectrum:")
+            spectrum.print_spectrum()
 
-        trie = mhs.calculate(spectrum)
-        report = barinel.diagnose(spectrum, trie)
-        print(report)
+            trie = mhs.calculate(spectrum)
+            report = barinel.diagnose(spectrum, trie)
+            print(report)
 
-        print(simulator.coverage(spectrum))
-        print(simulator.ddu(spectrum))
-        print(simulator.entropy(spectrum))
-
-        print(simulator.effort(report, spectrum.faults))
+            reporter.write(spectrum, report)
