@@ -1,0 +1,31 @@
+
+def effort(report, faults):
+    set_faults = [set(x) for x in faults]
+    lookup = [False] * len(faults)
+
+    gt_counter = 0
+    eq_counter = 0
+    current_value = None
+
+    for entry, value in report:
+
+        if current_value != value:
+            #break if solution was found
+            if len([x for x in lookup if not x]) == 0:
+                break
+
+            current_value = value
+            gt_counter += eq_counter
+            eq_counter = 1
+        else:
+            eq_counter += 1
+
+        set_entry = set(entry)
+
+        for i, fault in enumerate(set_faults):
+            lookup[i] |= len(set_entry.intersection(fault)) > 0
+
+    if eq_counter > 1:
+        gt_counter += (eq_counter - 1) / 2.0
+
+    return gt_counter
