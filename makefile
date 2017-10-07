@@ -7,7 +7,7 @@ PFLAGS =
 PIP = $(ENV)/bin/pip3
 
 run: $(ENV)
-	mkdir output
+	mkdir -p output
 	$(PYTHON) $(PFLAGS) run.py
 
 $(ENV): $(ENV)/bin/activate

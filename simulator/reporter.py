@@ -41,7 +41,7 @@ class Reporter(object):
                "uniqueness": uniq,
                "ddu": ddu_value,
                "entropy": entropy(spectrum),
-               "effort": effort(report, spectrum.faults)}
+               "effort": effort_reduced(spectrum, report)}
         self.csv.writerow(row)
 
     def __exit__(self, type, value, traceback):
