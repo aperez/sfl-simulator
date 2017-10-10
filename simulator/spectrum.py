@@ -55,6 +55,7 @@ class Spectrum(object):
                 out.write('x\n')
             else:
                 out.write('.\n')
+        #out.write(str(self.faults)+'\n')
 
     def sample_spectra(self, num_samples, num_transactions=None, seed=None):
         if num_transactions is None:
@@ -77,11 +78,11 @@ class Spectrum(object):
         s = Spectrum()
         s.id = self.id
         s.matrix = [t[:] for t in self.matrix]
-        s.faults = self.faults
+        s.faults = self.faults[:]
         s.calculate_dimensions()
         return s
 
-    def inject_faults(self, faults=None, num_faults=1, goodness=0, seed=None):
+    def inject_fault(self, faults=None, cardinality=1, goodness=0, seed=None):
         if seed is not None:
             random.seed(seed)
 
@@ -89,7 +90,7 @@ class Spectrum(object):
             current_faults = [x for fault in self.faults for x in fault]
             potential_faults = [x for x in range(self.components)
                                 if x not in current_faults]
-            faults = random.sample(potential_faults, num_faults)
+            faults = random.sample(potential_faults, cardinality)
 
         for t in self.matrix:
             inject = True

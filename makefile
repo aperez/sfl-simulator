@@ -1,4 +1,4 @@
-.PHONY: run
+.PHONY: run plot
 
 ENV = env
 PYTHON = $(ENV)/bin/python3
@@ -8,7 +8,10 @@ PIP = $(ENV)/bin/pip3
 
 run: $(ENV)
 	mkdir -p output
-	$(PYTHON) $(PFLAGS) run.py
+	$(PYTHON) $(PFLAGS) run.py --sim
+
+plot: $(ENV)
+	$(PYTHON) $(PFLAGS) run.py --plot
 
 $(ENV): $(ENV)/bin/activate
 
