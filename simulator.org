@@ -106,4 +106,5 @@
  # eval: (setq-local org-babel-python-command "env/bin/python3")
  # eval: (setq python-shell-prompt-detect-enabled nil)
  # eval: (setq python-shell-completion-native-enable nil)
+ # eval: (setq org-confirm-babel-evaluate nil)
  # End:
