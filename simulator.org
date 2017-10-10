@@ -4,7 +4,6 @@
 * Setting up
   #+BEGIN_SRC python :session :results none
     import simulator
-    components = 20
   #+END_SRC
 
 * Generating a topology
@@ -16,7 +15,7 @@
 
 * Simulate transactions
   #+BEGIN_SRC python :session :results output
-    extended_topology = simulator.TopologyGenerator(components).generate()
+    extended_topology = simulator.TopologyGenerator(20).generate()
     activator = simulator.CoverageActivator(extended_topology)
     simulated_transactions = activator.generate(reps = 20)
     print("Simulated ", simulated_transactions.transactions, "transactions")
