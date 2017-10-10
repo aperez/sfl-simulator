@@ -136,3 +136,12 @@ def entropy(spectrum, spectrum_filter, components, transactions):
         entropy_value += prob * math.log(prob, 2)
 
     return abs(entropy_value / components)
+
+def print_metrics(spectrum, spectrum_filter=None):
+    print("Coverage: ", coverage(spectrum))
+    ddu_value, den, div, uniq = ddu(spectrum)
+    print("Density: ", den)
+    print("Diversity: ", div)
+    print("Uniqueness: ", uniq)
+    print("DDU: ", ddu_value)
+    print("Entropy: ", entropy(spectrum))

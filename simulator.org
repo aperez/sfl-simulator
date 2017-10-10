@@ -1,0 +1,109 @@
+#+TITLE: SFL Simulator
+#+AUTHOR: Alexandre Perez
+
+* Setting up
+  #+BEGIN_SRC python :session :results none
+    import simulator
+    components = 20
+  #+END_SRC
+
+* Generating a topology
+  #+BEGIN_SRC python :session :results output
+    topology_generator = simulator.TopologyGenerator(10)
+    topology = topology_generator.generate()
+    topology.print_plot()
+  #+END_SRC
+
+* Simulate transactions
+  #+BEGIN_SRC python :session :results output
+    extended_topology = simulator.TopologyGenerator(components).generate()
+    activator = simulator.CoverageActivator(extended_topology)
+    simulated_transactions = activator.generate(reps = 20)
+    print("Simulated ", simulated_transactions.transactions, "transactions")
+  #+END_SRC
+
+* Sample matrices
+** Default activation probability
+   #+BEGIN_SRC python :session :results output
+     spectrum1 = [s for s in simulated_transactions.sample_spectra(1)][0]
+     spectrum1.print_spectrum()
+   #+END_SRC
+
+** Low activation probability:
+   #+BEGIN_SRC python :session :results output
+     simulated_transactions = activator.generate(reps = 20, coefs=[0.5])
+     spectrum2 = [s for s in simulated_transactions.sample_spectra(1)][0]
+     spectrum2.print_spectrum()
+   #+END_SRC
+
+** High activation probability
+   #+BEGIN_SRC python :session :results output
+     simulated_transactions = activator.generate(reps = 20, coefs=[3.0])
+     spectrum3 = [s for s in simulated_transactions.sample_spectra(1)][0]
+     spectrum3.print_spectrum()
+   #+END_SRC
+
+* Compute metrics
+  #+BEGIN_SRC python :session :results output
+    simulator.print_metrics(spectrum1)
+  #+END_SRC
+
+  #+BEGIN_SRC python :session :results output
+    simulator.print_metrics(spectrum2)
+  #+END_SRC
+
+  #+BEGIN_SRC python :session :results output
+    simulator.print_metrics(spectrum3)
+  #+END_SRC
+
+* Inject faults
+** Single fault
+   #+BEGIN_SRC python :session :results output
+     faulty_spectrum1 = spectrum1.copy()
+     faults = faulty_spectrum1.inject_fault(cardinality=1)
+     print("Faults: ", faulty_spectrum1.faults)
+     faulty_spectrum1.print_spectrum()
+   #+END_SRC
+
+** Multiple faults
+   #+BEGIN_SRC python :session :results output
+     faulty_spectrum2 = spectrum1.copy()
+     faults = faulty_spectrum2.inject_fault(cardinality=1)
+     faults = faulty_spectrum2.inject_fault(cardinality=1)
+     print("Faults: ", faulty_spectrum2.faults)
+     faulty_spectrum2.print_spectrum()
+   #+END_SRC
+
+** Dependent faults
+   #+BEGIN_SRC python :session :results output
+     faulty_spectrum3 = spectrum1.copy()
+     faults = faulty_spectrum3.inject_fault(cardinality=2)
+     print("Faults: ", faulty_spectrum3.faults)
+     faulty_spectrum3.print_spectrum()
+   #+END_SRC
+
+* Diagnosis
+** Barinel
+   #+BEGIN_SRC python :session :results output
+     mhs = simulator.MHS()
+     barinel = simulator.Barinel()
+
+     trie = mhs.calculate(faulty_spectrum1)
+     report = barinel.diagnose(faulty_spectrum1, trie)
+     for index, (candidate, probability) in enumerate(report):
+         if index >= 5: break
+         print(candidate, probability)
+   #+END_SRC
+
+** Effort to diagnose
+   #+BEGIN_SRC python :session :results output
+     effort = simulator.effort_reduced(faulty_spectrum1, report)
+     print("Effort to diagnose: ", effort)
+   #+END_SRC
+
+
+ # Local Variables:
+ # eval: (setq-local org-babel-python-command "env/bin/python3")
+ # eval: (setq python-shell-prompt-detect-enabled nil)
+ # eval: (setq python-shell-completion-native-enable nil)
+ # End:
