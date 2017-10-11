@@ -2,8 +2,8 @@ import simulator
 import argparse
 import yaml
 
-def generate_matrices(sim_settings, simulated_transactions):
-    for spectrum in simulated_transactions.sample_spectra(sim_settings["matrix_samples"]):
+def generate_matrices(sim_settings, transactions):
+    for spectrum in transactions.sample_spectra(sim_settings["matrix_samples"]):
         for fault_pattern in sim_settings["injector"]["fault_patterns"]:
             for goodness in sim_settings["injector"]["goodnesses"]:
                 faulty_spectrum = spectrum.copy()
@@ -14,8 +14,7 @@ def generate_matrices(sim_settings, simulated_transactions):
 def simulate(settings):
     sim_settings = settings["simulation"]
 
-    mhs = simulator.MHS()
-    barinel = simulator.Barinel()
+    barinel = simulator.BarinelNative()
     matrix_id = 0
 
     with simulator.Reporter(settings["output"]["report"]) as reporter:
@@ -32,8 +31,8 @@ def simulate(settings):
                     spectrum.id = matrix_id
                     matrix_id += 1
 
-                    trie = mhs.calculate(spectrum)
-                    report = barinel.diagnose(spectrum, trie)
+                    report = []
+                    #report = barinel.diagnose(spectrum)
                     reporter.write(spectrum, report)
 
 if __name__ == "__main__":

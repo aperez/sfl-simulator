@@ -52,9 +52,9 @@ class Spectrum(object):
                 out.write('%d ' % self.get_activity(t, c))
 
             if self.is_error(t):
-                out.write('x\n')
+                out.write('-\n')
             else:
-                out.write('.\n')
+                out.write('+\n')
         #out.write(str(self.faults)+'\n')
 
     def sample_spectra(self, num_samples, num_transactions=None, seed=None):

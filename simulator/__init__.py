@@ -6,6 +6,7 @@ from .trie import *
 from .ranker import *
 from .mhs import *
 from .barinel import *
+from .barinel_native import *
 from .metrics import *
 from .effort import *
 from .reporter import *

@@ -8,6 +8,7 @@ PIP = $(ENV)/bin/pip3
 
 run: $(ENV)
 	mkdir -p output
+	mkdir -p tmp
 	$(PYTHON) $(PFLAGS) run.py --sim
 
 plot: $(ENV)
