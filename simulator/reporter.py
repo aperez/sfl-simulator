@@ -13,13 +13,15 @@ class Reporter(object):
                            "components",
                            "transactions",
                            "faults",
+                           "cardinality",
                            "coverage",
                            "density",
                            "diversity",
                            "uniqueness",
                            "ddu",
                            "entropy",
-                           "effort"]
+                           "effort",
+                           "effort-norm"]
 
     def __enter__(self):
         self.file = open(self.filename, 'w')
@@ -31,17 +33,20 @@ class Reporter(object):
 
     def write(self, spectrum, report):
         ddu_value, den, div, uniq = ddu(spectrum)
+        effort_value = effort_reduced(spectrum, report)
         row = {"id": spectrum.id,
                "components": spectrum.components,
                "transactions": spectrum.transactions,
                "faults": str(spectrum.faults),
+               "cardinality": len(spectrum.faults),
                "coverage": coverage(spectrum),
                "density": den,
                "diversity": div,
                "uniqueness": uniq,
                "ddu": ddu_value,
                "entropy": entropy(spectrum),
-               "effort": effort_reduced(spectrum, report)}
+               "effort": effort_value,
+               "effort-norm": effort_value / spectrum.components}
         self.csv.writerow(row)
 
     def __exit__(self, type, value, traceback):

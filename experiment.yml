@@ -1,0 +1,29 @@
+simulation:
+  components:
+    - 100
+  activator:
+    reps: 75
+    coefs:
+      - [0.1]
+      - [20.0]
+      - [0.85, 3.0, 5.0, 20.0]
+  matrix_samples: 100
+  injector:
+    fault_patterns:
+      - [1]
+      - [1,1]
+      - [1,1,1]
+      - [2]
+    goodnesses:
+      - 0.0
+      - 0.05
+      - 0.10
+output:
+  report: "output/report.csv"
+  plots:
+    - data: ["coverage", "effort-norm"]
+      filename: "output/coverage.pdf"
+    - data: ["coverage", "ddu"]
+      filename: "output/coverage-ddu.pdf"
+    - data: ["ddu", "effort-norm"]
+      filename: "output/ddu.pdf"

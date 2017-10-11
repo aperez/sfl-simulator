@@ -16,24 +16,19 @@ def scatter_plot(filename, x, y,
     plt.savefig(filename, bbox_inches="tight")
 
 
-def plot_report(report_path):
-    with open(report_path) as f:
+def plot_report(settings):
+    output_settings = settings["output"]
+    with open(output_settings["report"]) as f:
         reader = csv.DictReader(f, delimiter=";")
         results = [row for row in reader]
 
         column_values = lambda x: [float(row[x]) for row in results]
         lookup = {
-            "effort": column_values("effort"),
+            "effort-norm": column_values("effort-norm"),
             "ddu": column_values("ddu"),
             "coverage": column_values("coverage"),
         }
 
-        effort_values = lookup["effort"]
-
-        scatter_plot("output/coverage.pdf", lookup["coverage"], effort_values,
-                     ylim = (0, max(effort_values) + 1))
-
+        scatter_plot("output/coverage.pdf", lookup["coverage"], lookup["effort-norm"])
         scatter_plot("output/coverage-ddu.pdf", lookup["coverage"], lookup["ddu"])
-
-        scatter_plot("output/ddu.pdf", lookup["ddu"], effort_values,
-                     ylim = (0, max(effort_values) + 1))
+        scatter_plot("output/ddu.pdf", lookup["ddu"], lookup["effort-norm"])

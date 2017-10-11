@@ -3,11 +3,14 @@ from .spectrum import *
 from .spectrum_filter import *
 from .trie import *
 
+import time
+
 class MHS(object):
-    def __init__(self, l=8):
+    def __init__(self, l=3, t=2):
         self.ranker = SimilarityRanker(ochiai)
         self.cutoff = l
-        self.epsilon = 0.0001
+        self.timeout = t
+        self.epsilon = 0.05
 
     def calculate(self, spectrum, spectrum_filter=None):
         self.spectrum = spectrum
@@ -17,12 +20,13 @@ class MHS(object):
 
         spectrum_filter.filter_passing_transactions(self.spectrum)
         self.candidates = Trie()
+        self.start_time = time.time()
         self.calculate_mhs(spectrum_filter, [])
         return self.candidates
 
     def calculate_mhs(self, spectrum_filter, d):
         if spectrum_filter.has_failing_transactions(self.spectrum):
-            if len(d) + 1 >= self.cutoff:
+            if len(d) + 1 >= self.cutoff or self.is_timeout():
                 return
 
             r = self.ranker.rank(self.spectrum, spectrum_filter=spectrum_filter)
@@ -46,3 +50,6 @@ class MHS(object):
 
         elif d:
             self.candidates.add_candidate(sorted(d))
+
+    def is_timeout(self):
+        return time.time() - self.start_time > self.timeout
