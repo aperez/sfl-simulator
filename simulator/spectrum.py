@@ -104,3 +104,16 @@ class Spectrum(object):
 
         self.faults.append(faults)
         return faults
+
+    def remove_components(self, ratio_range=[0.0, 1.0], seed=None):
+        if seed is not None:
+            random.seed(seed)
+
+        ratio_range = [int(x * self.components) for x in ratio_range]
+        to_remove = random.randint(*ratio_range)
+
+        components_list = [x for x in range(self.components)]
+
+        for c in random.sample(components_list, to_remove):
+            for transaction in self.matrix:
+                transaction[c] = 0;

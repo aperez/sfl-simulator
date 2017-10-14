@@ -52,7 +52,8 @@ def effort_reduced(spectrum, report):
     for c, value in component_scores:
         if current_value != value:
             #break if solution was found
-            if len([x for x in lookup if not x]) == 0:
+            #if len([x for x in lookup if not x]) == 0:
+            if len([x for x in lookup if x]) > 0:
                 break
 
             current_value = value
