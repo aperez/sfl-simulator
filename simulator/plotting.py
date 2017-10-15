@@ -2,8 +2,11 @@ import csv
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-def scatter_plot(filename, x, y,
+def scatter_plot(filename, lookup, xkey, ykey,
                  xlim = (0,1), ylim = (0,1)):
+    x = lookup[xkey]
+    y = lookup[ykey]
+
     fig, ax = plt.subplots()
     plt.scatter(x, y)
 
@@ -11,6 +14,9 @@ def scatter_plot(filename, x, y,
         ax.set_xlim(*xlim)
     if ylim:
         ax.set_ylim(*ylim)
+
+    plt.xlabel(xkey)
+    plt.ylabel(ykey)
 
     plt.tight_layout()
     plt.savefig(filename, bbox_inches="tight")
@@ -24,11 +30,11 @@ def plot_report(settings):
 
         column_values = lambda x: [float(row[x]) for row in results]
         lookup = {
-            "effort-norm": column_values("effort-norm"),
+            "effort": column_values("effort-norm"),
             "ddu": column_values("ddu"),
             "coverage": column_values("coverage"),
         }
 
-        scatter_plot("output/coverage.pdf", lookup["coverage"], lookup["effort-norm"])
-        scatter_plot("output/coverage-ddu.pdf", lookup["coverage"], lookup["ddu"])
-        scatter_plot("output/ddu.pdf", lookup["ddu"], lookup["effort-norm"])
+        scatter_plot("output/coverage.pdf", lookup, "coverage", "effort")
+        scatter_plot("output/coverage-ddu.pdf", lookup, "coverage", "ddu")
+        scatter_plot("output/ddu.pdf", lookup, "ddu", "effort")
