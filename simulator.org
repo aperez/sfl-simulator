@@ -28,6 +28,10 @@
      spectrum1.print_spectrum()
    #+END_SRC
 
+   #+BEGIN_SRC python :session :results output
+     simulator.print_metrics(spectrum1)
+   #+END_SRC
+
 ** Low activation probability:
    #+BEGIN_SRC python :session :results output
      simulated_transactions = activator.generate(reps = 20, coefs=[0.5])
@@ -35,21 +39,17 @@
      spectrum2.print_spectrum()
    #+END_SRC
 
+
+  #+BEGIN_SRC python :session :results output
+    simulator.print_metrics(spectrum2)
+  #+END_SRC
+
 ** High activation probability
    #+BEGIN_SRC python :session :results output
      simulated_transactions = activator.generate(reps = 20, coefs=[3.0])
      spectrum3 = [s for s in simulated_transactions.sample_spectra(1)][0]
      spectrum3.print_spectrum()
    #+END_SRC
-
-* Compute metrics
-  #+BEGIN_SRC python :session :results output
-    simulator.print_metrics(spectrum1)
-  #+END_SRC
-
-  #+BEGIN_SRC python :session :results output
-    simulator.print_metrics(spectrum2)
-  #+END_SRC
 
   #+BEGIN_SRC python :session :results output
     simulator.print_metrics(spectrum3)
