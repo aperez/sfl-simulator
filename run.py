@@ -3,8 +3,9 @@ import argparse
 import yaml
 
 def generate_matrices(sim_settings, transactions):
+    samples = sim_settings["matrix_samples"]
     for remove_range in sim_settings["remove_ranges"]:
-        for spectrum in transactions.sample_spectra(sim_settings["matrix_samples"]):
+        for spectrum in transactions.sample_spectra(samples):
 
             working_spectrum = spectrum.copy()
             working_spectrum.remove_components(remove_range)
@@ -14,13 +15,15 @@ def generate_matrices(sim_settings, transactions):
                     faulty_spectrum = working_spectrum.copy()
                     for cardinality in fault_pattern:
                         faulty_spectrum.inject_fault(cardinality=cardinality)
+                    faulty_spectrum.id = sim_settings["last_id"]
                     yield faulty_spectrum
+                sim_settings["last_id"] += 1
 
 def simulate(settings):
     sim_settings = settings["simulation"]
 
     barinel = simulator.BarinelNative()
-    matrix_id = 0
+    sim_settings["last_id"] = 0
 
     with simulator.Reporter(settings["output"]["report"]) as reporter:
         for components in sim_settings["components"]:
@@ -32,10 +35,8 @@ def simulate(settings):
             for coefs in sim_settings["activator"]["coefs"]:
                 simulated_transactions = activator.generate(reps=reps, coefs=coefs)
 
-                for spectrum in generate_matrices(sim_settings, simulated_transactions):
-                    spectrum.id = matrix_id
-                    matrix_id += 1
-
+                for spectrum in generate_matrices(sim_settings,
+                                                  simulated_transactions):
                     report = barinel.diagnose(spectrum)
                     reporter.write(spectrum, report)
 
