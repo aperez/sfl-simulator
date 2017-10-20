@@ -1,9 +1,8 @@
 simulation:
   components:
     - 40
-    - 40
   activator:
-    reps: 40
+    reps: 100
     coefs:
       - [0.1]
       - [1.0]
@@ -11,7 +10,7 @@ simulation:
       - [0.0, 1.0, 3.0]
   remove_ranges:
     - [0.0, 1.0]
-  matrix_samples: 100
+  matrix_samples: 5
   injector:
     fault_patterns:
       - [1]
@@ -22,6 +21,7 @@ simulation:
       - 0.0
       - 0.10
       - 0.25
+  per_fault: 10
 output:
   report: "output/report.csv"
   plots:

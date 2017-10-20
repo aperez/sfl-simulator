@@ -12,12 +12,13 @@ def generate_matrices(sim_settings, transactions):
 
             for fault_pattern in sim_settings["injector"]["fault_patterns"]:
                 for goodness in sim_settings["injector"]["goodnesses"]:
-                    faulty_spectrum = working_spectrum.copy()
-                    for cardinality in fault_pattern:
-                        faulty_spectrum.inject_fault(cardinality=cardinality)
-                    faulty_spectrum.id = sim_settings["last_id"]
-                    yield faulty_spectrum
-                sim_settings["last_id"] += 1
+                    for _ in range(sim_settings["per_fault"]):
+                        faulty_spectrum = working_spectrum.copy()
+                        for cardinality in fault_pattern:
+                            faulty_spectrum.inject_fault(cardinality=cardinality)
+                        faulty_spectrum.id = sim_settings["last_id"]
+                        yield faulty_spectrum
+                    sim_settings["last_id"] += 1
 
 def simulate(settings):
     sim_settings = settings["simulation"]
