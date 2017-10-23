@@ -1,21 +1,28 @@
 import csv
 import operator
 import itertools
+import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import scipy.stats
 
 def scatter_plot(filename, lookup, xkey, ykey,
-                 xlim = (0,1), ylim = (0,1)):
+                 xlim = (0,1), ylim = (0,1), correlation=False):
     x = lookup[xkey]
     y = lookup[ykey]
 
     # remove duplicate points
+    decimal_points = 3
     point_set = set(zip(x,y))
-    x = [px for px,_ in point_set]
-    y = [py for _,py in point_set]
+    x = [round(px, decimal_points) for px,_ in point_set]
+    y = [round(py, decimal_points) for _,py in point_set]
 
     fig, ax = plt.subplots()
-    plt.scatter(x, y)
+    plt.scatter(x, y, s=4)
+
+    if correlation:
+        fit = np.polyfit(x, y, deg=1)
+        plt.plot(x, fit[0] * np.array(x) + fit[1], color='red')
 
     if xlim:
         ax.set_xlim(*xlim)
@@ -57,20 +64,65 @@ def process_results(settings, results):
         processed.extend(group)
     return processed
 
+def read_results(settings):
+    results = []
+    files = [settings["report"]]
+    id_offset = 0
+    last_id = 0
+
+    for fs in files:
+        id_offset += last_id + 1
+        with open(fs) as f:
+            reader = csv.DictReader(f, delimiter=";")
+            rs = [row for row in reader]
+            for row in rs:
+                row["error-detection"] = 1 if row.get("failing-transactions", 0) > 0 else 0
+                last_id = int(row["id"])
+                row["id"] = last_id + id_offset
+        results.extend(rs)
+
+    results = process_results(settings, results)
+    return results
+
 def plot_report(settings):
     output_settings = settings["output"]
-    with open(output_settings["report"]) as f:
-        reader = csv.DictReader(f, delimiter=";")
-        results = [row for row in reader]
-        results = process_results(output_settings, results)
+    results = read_results(output_settings)
 
-        column_values = lambda x: [float(row[x]) for row in results]
-        lookup = {
-            "effort-norm": column_values("effort-norm"),
-            "ddu": column_values("ddu"),
-            "coverage": column_values("coverage"),
-        }
+    column_values = lambda x: [float(row[x]) for row in results]
+    density_values = column_values("density")
+    diversity_values = column_values("diversity")
+    uniqueness_values = column_values("uniqueness")
 
-        scatter_plot("output/coverage.pdf", lookup, "coverage", "effort-norm")
-        scatter_plot("output/coverage-ddu.pdf", lookup, "coverage", "ddu")
-        scatter_plot("output/ddu.pdf", lookup, "ddu", "effort-norm")
+    ddu_avg_values = [(x+y+z)/3 for x,y,z in zip(density_values,
+                                                     diversity_values,
+                                                     uniqueness_values)]
+
+    lookup = {
+        "effort-norm": column_values("effort-norm"),
+        "ddu": column_values("ddu"),
+        "coverage": column_values("coverage"),
+        "density": density_values,
+        "diversity": diversity_values,
+        "uniqueness": uniqueness_values,
+        "ddu-avg": ddu_avg_values,
+        "entropy": column_values("entropy"),
+        "error-detection": column_values("error-detection")
+    }
+
+    #print(scipy.stats.pearsonr(lookup["coverage"], lookup["effort-norm"]))
+    #print(scipy.stats.pearsonr(lookup["ddu"], lookup["effort-norm"]))
+
+    scatter_plot("output/coverage.pdf", lookup, "coverage", "effort-norm")
+    scatter_plot("output/coverage-ddu.pdf", lookup, "coverage", "ddu")
+    scatter_plot("output/ddu.pdf", lookup, "ddu", "effort-norm")
+
+    scatter_plot("output/density.pdf", lookup, "density", "effort-norm")
+    scatter_plot("output/diversity.pdf", lookup, "diversity", "effort-norm")
+    scatter_plot("output/uniqueness.pdf", lookup, "uniqueness", "effort-norm")
+
+    scatter_plot("output/ddu-avg.pdf", lookup, "ddu-avg", "effort-norm")
+    scatter_plot("output/entropy.pdf", lookup, "entropy", "effort-norm")
+
+    scatter_plot("output/detection-ddu.pdf", lookup, "ddu", "error-detection")
+    scatter_plot("output/detection-coverage.pdf",
+                 lookup, "coverage", "error-detection")
