@@ -21,7 +21,8 @@ class Reporter(object):
                            "ddu",
                            "entropy",
                            "effort",
-                           "effort-norm"]
+                           "effort-norm",
+                           "failing-transactions"]
 
     def __enter__(self):
         self.file = open(self.filename, 'w')
@@ -46,7 +47,8 @@ class Reporter(object):
                "ddu": ddu_value,
                "entropy": entropy(spectrum),
                "effort": effort_value,
-               "effort-norm": effort_value / spectrum.components}
+               "effort-norm": effort_value / spectrum.components,
+               "failing-transactions": spectrum.failing_transaction_count()}
         self.csv.writerow(row)
 
     def __exit__(self, type, value, traceback):

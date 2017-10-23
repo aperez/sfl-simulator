@@ -42,6 +42,9 @@ class Spectrum(object):
     def is_error(self, transaction):
         return self.matrix[transaction][-1]
 
+    def failing_transaction_count(self):
+        return sum([1 for t in self.matrix if t[-1] == 1])
+
     def print_spectrum(self, out=sys.stdout, spectrum_filter=None):
         if not spectrum_filter:
             spectrum_filter = SpectrumFilter(self)

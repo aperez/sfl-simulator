@@ -4,9 +4,12 @@ import subprocess
 
 import simulator
 
-def call(command, timeout=None):
+def call(command, timeout=1800):
     print(command)
-    return subprocess.call(command.split(" "), timeout=timeout)
+    try:
+        return subprocess.call(command.split(" "), timeout=timeout)
+    except:
+        return -1
 
 def barinel_command(*args):
     module_path = os.path.dirname(simulator.__file__)
