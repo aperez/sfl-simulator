@@ -76,7 +76,7 @@ def read_results(settings):
             reader = csv.DictReader(f, delimiter=";")
             rs = [row for row in reader]
             for row in rs:
-                row["error-detection"] = 1 if row.get("failing-transactions", 0) > 0 else 0
+                row["error-detection"] = 1 if int(row.get("failing-transactions", 0)) > 0 else 0
                 last_id = int(row["id"])
                 row["id"] = last_id + id_offset
         results.extend(rs)
