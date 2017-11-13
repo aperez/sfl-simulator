@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import scipy.stats
+import glob2
 
 def scatter_plot(filename, lookup, xkey, ykey,
                  xlim = (0,1), ylim = (0,1), correlation=False):
@@ -12,13 +13,13 @@ def scatter_plot(filename, lookup, xkey, ykey,
     y = lookup[ykey]
 
     # remove duplicate points
-    decimal_points = 3
+    decimal_points = 2
     point_set = set(zip(x,y))
     x = [round(px, decimal_points) for px,_ in point_set]
     y = [round(py, decimal_points) for _,py in point_set]
 
     fig, ax = plt.subplots()
-    plt.scatter(x, y, s=4)
+    plt.scatter(x, y, s=3)
 
     if correlation:
         fit = np.polyfit(x, y, deg=1)
@@ -66,7 +67,7 @@ def process_results(settings, results):
 
 def read_results(settings):
     results = []
-    files = [settings["report"]]
+    files = glob2.glob(settings["folder"] + "*.csv")
     id_offset = 0
     last_id = 0
 
