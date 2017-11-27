@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import scipy.stats
 import glob2
 
+from matplotlib.colors import LinearSegmentedColormap
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
 def scatter_plot(filename, lookup, xkey, ykey,
                  xlim = (0,1), ylim = (0,1), correlation=False):
     x = lookup[xkey]
@@ -35,6 +38,36 @@ def scatter_plot(filename, lookup, xkey, ykey,
 
     plt.tight_layout()
     plt.savefig(filename, bbox_inches="tight")
+
+def hist2d_plot(filename, lookup, xkey, ykey,
+                xlim = (0,1), ylim = (0,0.8), correlation=False):
+    x = lookup[xkey]
+    y = lookup[ykey]
+
+    #colormap
+    colors = [(0.85, 0.85, 0.85),(0.20, 0.20, 0.20)]
+    cm = LinearSegmentedColormap.from_list("my_cmap", colors, N=50)
+
+    fig, ax = plt.subplots()
+    plt.hist2d(x,y,bins=75,range=[xlim,ylim],vmin=0,vmax=200,cmin=0.001,cmap=cm)
+
+    if correlation:
+        fit = np.polyfit(x, y, deg=1)
+        plt.plot(x, fit[0] * np.array(x) + fit[1], color='red')
+
+    # plt.xlabel(xkey)
+    plt.ylabel(ykey)
+
+    cbaxes = inset_axes(ax, width="30%", height="3%", loc=1, borderpad=1)
+    plt.colorbar(cax=cbaxes, ticks=[0.,200], orientation='horizontal')
+
+    if xlim:
+        ax.set_xlim(*xlim)
+    if ylim:
+        ax.set_ylim(*ylim)
+
+    plt.tight_layout()
+    plt.savefig(filename)
 
 def average_results(results):
     skip_keys = ["id", "components", "transactions", "faults", "cardinality"]
@@ -99,31 +132,18 @@ def plot_report(settings):
                                                      uniqueness_values)]
 
     lookup = {
-        "effort-norm": column_values("effort-norm"),
-        "ddu": column_values("ddu"),
-        "coverage": column_values("coverage"),
+        "Effort": column_values("effort-norm"),
+        "DDU": column_values("ddu"),
+        "Coverage": column_values("coverage"),
         "density": density_values,
         "diversity": diversity_values,
         "uniqueness": uniqueness_values,
         "ddu-avg": ddu_avg_values,
-        "entropy": column_values("entropy"),
+        "Entropy": column_values("entropy"),
         "error-detection": column_values("error-detection")
     }
 
-    #print(scipy.stats.pearsonr(lookup["coverage"], lookup["effort-norm"]))
-    #print(scipy.stats.pearsonr(lookup["ddu"], lookup["effort-norm"]))
-
-    scatter_plot("output/coverage.pdf", lookup, "coverage", "effort-norm")
-    scatter_plot("output/coverage-ddu.pdf", lookup, "coverage", "ddu")
-    scatter_plot("output/ddu.pdf", lookup, "ddu", "effort-norm")
-
-    scatter_plot("output/density.pdf", lookup, "density", "effort-norm")
-    scatter_plot("output/diversity.pdf", lookup, "diversity", "effort-norm")
-    scatter_plot("output/uniqueness.pdf", lookup, "uniqueness", "effort-norm")
-
-    scatter_plot("output/ddu-avg.pdf", lookup, "ddu-avg", "effort-norm")
-    scatter_plot("output/entropy.pdf", lookup, "entropy", "effort-norm")
-
-    scatter_plot("output/detection-ddu.pdf", lookup, "ddu", "error-detection")
-    scatter_plot("output/detection-coverage.pdf",
-                 lookup, "coverage", "error-detection")
+    hist2d_plot("output/coverage-h.pdf", lookup, "Coverage", "Effort")
+    hist2d_plot("output/ddu-h.pdf", lookup, "DDU", "Effort")
+    hist2d_plot("output/entropy-h.pdf", lookup, "Entropy", "Effort")
+    hist2d_plot("output/ddu-avg-h.pdf", lookup, "ddu-avg", "Effort")
