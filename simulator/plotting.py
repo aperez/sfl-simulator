@@ -113,6 +113,7 @@ def read_results(settings):
                 row["error-detection"] = 1 if int(row.get("failing-transactions", 0)) > 0 else 0
                 last_id = int(row["id"])
                 row["id"] = last_id + id_offset
+                row['deps'] = len(eval(row['faults'])[0])
         results.extend(rs)
 
     results = process_results(settings, results)
@@ -131,6 +132,8 @@ def plot_report(settings):
                                                      diversity_values,
                                                      uniqueness_values)]
 
+    ed_selector = "Error Detection"
+
     lookup = {
         "Effort": column_values("effort-norm"),
         "DDU": column_values("ddu"),
@@ -140,7 +143,8 @@ def plot_report(settings):
         "uniqueness": uniqueness_values,
         "ddu-avg": ddu_avg_values,
         "Entropy": column_values("entropy"),
-        "error-detection": column_values("error-detection")
+        "fault-type": list(zip(column_values('cardinality'), column_values('deps')))
+        ed_selector: column_values("error-detection"),
     }
 
     hist2d_plot("output/coverage-h.pdf", lookup, "Coverage", "Effort")
