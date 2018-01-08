@@ -45,9 +45,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="SFL Simulator")
     parser.add_argument("--sim", help="Simulate", action="store_true")
     parser.add_argument("--plot", help="Plot results", action="store_true")
+    parser.add_argument("--desc", help="Experiment description",
+                        action="store", default="experiment.yml")
     args = parser.parse_args()
 
-    with open("experiment.yml") as e:
+    with open(args.desc) as e:
         experiment_settings = yaml.load(e)
 
         if args.sim:
