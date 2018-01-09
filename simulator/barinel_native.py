@@ -1,6 +1,7 @@
 import os
 import uuid
 import subprocess
+import sys
 
 import simulator
 
@@ -12,13 +13,19 @@ def call(command, timeout=1800):
         return -1
 
 def barinel_command(*args):
-    module_path = os.path.dirname(simulator.__file__)
-    command = module_path + "/native/Barinel.linux.x86_64 {} {} {} {}"
+    command = os.path.dirname(simulator.__file__)
+    if sys.platform == "darwin":
+        command += "/native/Barinel.macosx.x86_64 {} {} {} {}"
+    else:
+        command += "/native/Barinel.linux.x86_64 {} {} {} {}"
     call(command.format(*args))
 
 def staccato_command(*args):
-    module_path = os.path.dirname(simulator.__file__)
-    command = module_path + "/native/Staccato.linux.x86_64 {} {} {}"
+    command = os.path.dirname(simulator.__file__)
+    if sys.platform == "darwin":
+        command += "/native/Staccato.macosx.x86_64 {} {} {}"
+    else:
+        command += "/native/Staccato.linux.x86_64 {} {} {}"
     call(command.format(*args))
 
 class BarinelNative(object):
