@@ -1,0 +1,21 @@
+simulation:
+  components:
+    - 100
+  activator:
+    reps: 1
+    coefs:
+      - [1.0]
+  remove_ranges:
+    - [0.0, 1.0]
+  matrix_samples: 1
+  injector:
+    fault_patterns:
+      - [1]
+      - [1,1]
+      - [2]
+    goodnesses:
+      - 0.0
+  per_fault: 1
+output:
+  report: "output/report.csv"
+  folder: "output/"

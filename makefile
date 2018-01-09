@@ -5,14 +5,15 @@ PYTHON = $(ENV)/bin/python3
 #PFLAGS = -m cProfile -s cumtime
 PFLAGS =
 PIP = $(ENV)/bin/pip3
+desc = example.yml
 
 run: $(ENV)
 	mkdir -p output
 	mkdir -p tmp
-	$(PYTHON) $(PFLAGS) run.py --sim
+	$(PYTHON) $(PFLAGS) run.py --sim --desc $(desc)
 
 plot: $(ENV)
-	$(PYTHON) $(PFLAGS) run.py --plot
+	$(PYTHON) $(PFLAGS) run.py --plot --desc $(desc)
 
 $(ENV): $(ENV)/bin/activate
 
