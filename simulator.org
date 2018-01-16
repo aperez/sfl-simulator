@@ -35,15 +35,15 @@ goodness parameter.
 
 ** Generating a topology
    #+BEGIN_SRC python :session :results output
-     topology_generator = simulator.TopologyGenerator(10)
+     components = 20
+     topology_generator = simulator.TopologyGenerator(components)
      topology = topology_generator.generate()
      topology.print_plot()
    #+END_SRC
 
 ** Simulate transactions
    #+BEGIN_SRC python :session :results output
-     extended_topology = simulator.TopologyGenerator(20).generate()
-     activator = simulator.CoverageActivator(extended_topology)
+     activator = simulator.CoverageActivator(topology)
      simulated_transactions = activator.generate(reps = 20)
      print("Simulated ", simulated_transactions.transactions, "transactions")
    #+END_SRC
@@ -121,7 +121,7 @@ goodness parameter.
           print(candidate, probability)
     #+END_SRC
 
-*** Effort to diagnose
+*** Measuring diagnostic effort
     #+BEGIN_SRC python :session :results output
       effort = simulator.effort_reduced(faulty_spectrum1, report)
       print("Effort to diagnose: ", effort)
