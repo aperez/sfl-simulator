@@ -16,7 +16,9 @@ goodness parameter.
   make run desc=example.yml
   #+END_SRC
   In the example above, the option =desc=example.yml= tells the simulator to use
-  the experiment description from file [[./example.yml][example.yml]].
+  the experiment description from file [[./example.yml][example.yml]]. A full-fledged experimental
+  description file is also included in the repository: [[./tse.yml][tse.yml]].
+
 
   After running a simulation, results can be plotted by:
   #+BEGIN_SRC sh
