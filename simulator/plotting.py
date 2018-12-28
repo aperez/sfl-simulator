@@ -39,7 +39,7 @@ def remove_duplicates(x, y, samples=5000):
     point_set = set(random.sample(list(zip(x, y)), samples))
     return [x for x,_ in point_set], [y for _, y in point_set]
 
-def hist2d_ax(fig, ax, x, y, xlim, ylim, cm, vmin=0, vmax = 150, bins=35):
+def hist2d_ax(fig, ax, x, y, xlim, ylim, cm, vmin=0, vmax = 300, bins=35):
     h = ax.hist2d(x, y, bins=bins, range=[xlim, ylim], vmin=vmin, vmax=vmax, cmin=0.001, cmap=cm)
 
     if xlim:
@@ -113,7 +113,7 @@ def scatter_plot(filename, lookup, xkey, ykey, xlim=(0,1), ylim=(0,1)):
 
     plt.savefig(filename, bbox_inches="tight")
 
-def ed_plot(filename, lookup, xkey, ykey, xlim = (0,1), ylim = (0,1), vmax=600, bins=25):
+def ed_plot(filename, lookup, xkey, ykey, xlim = (0,1), ylim = (0,1), vmax=1000, bins=25):
     x = lookup[xkey]
     y = lookup[ykey]
 
@@ -223,7 +223,7 @@ def plot_report(settings):
     fname = lambda x: "{}/{}".format(output_settings["folder"], x)
     scatter_plot(fname("scatter-cov.pdf"), lookup, "Coverage", "Effort", ylim=(0,0.6))
     scatter_plot(fname("scatter-ddu.pdf"), lookup, "DDU", "Effort", ylim=(0,0.6))
-    scatter_plot(fname("scatter-entropy.pdf"), lookup, "Entropy", "Effort", ylim=(0,0.6))
+    scatter_plot(fname("scatter-entropy.pdf"), lookup, "Entropy", "Effort", ylim=(0,0.6), xlim=(0,0.08))
     scatter_plot(fname("scatter-ddu-avg.pdf"), lookup, avg_selector, "Effort", ylim=(0,0.6))
 
     ed_plot(fname("error-detection-ddu.pdf"), lookup, "DDU", ed_selector)

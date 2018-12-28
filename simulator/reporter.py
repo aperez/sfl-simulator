@@ -50,6 +50,7 @@ class Reporter(object):
                "effort-norm": effort_value / spectrum.components,
                "failing-transactions": spectrum.failing_transaction_count()}
         self.csv.writerow(row)
+        self.file.flush()
 
     def __exit__(self, type, value, traceback):
         self.file.close()

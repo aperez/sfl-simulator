@@ -52,14 +52,16 @@ class BarinelNative(object):
         report = self.parse_report(barinel_path)
 
         if cleanup:
-            os.remove(matrix_path)
-            os.remove(staccato_path)
-            os.remove(barinel_path)
+            if os.path.isfile(matrix_path): os.remove(matrix_path)
+            if os.path.isfile(staccato_path): os.remove(staccato_path)
+            if os.path.isfile(barinel_path): os.remove(barinel_path)
 
         return report
 
     def parse_report(self, barinel_path):
         report = []
+        if not os.path.isfile(barinel_path):
+            return report
         with open(barinel_path) as b:
             for line in b:
                 candidate = []
